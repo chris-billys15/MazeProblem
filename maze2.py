@@ -1,15 +1,17 @@
 import heapq
 import collections
 
-DIRECTIONS = [(0, -1, 'A'), (0, 1, 'B'), (-1, 0, 'C'), (1, 0, 'D')]
+global curPoint
+
+DIRECTIONS = [(0, -1, 'B'), (0, 1, 'T'), (-1, 0, 'U'), (1, 0, 'S'),]
 
 Node = collections.namedtuple('Node', ['heuristic_distance', 'n', 'distance', 'current_position', 'visitedNode', 'direction'])
-
+curPoint = ()
 def manhattan(current, goal):
     """
     Return the heuristic distance from current position to goal.
     """
-    print(abs(current[0] - goal[0]) + abs(current[1] - goal[1]))
+    print("manhattan :" ,abs(current[0] - goal[0]) + abs(current[1] - goal[1]))
     return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
 
 def readFile(filename):
@@ -28,8 +30,8 @@ def printMatrix(M):
                 print(M[i][j],end ='')
 
 def main():
+    global curPoint
     """
-    Return a string of the characters describing a path through labyrinth.
     content: A list of lists.  '0' indicates a passable cell.
     """
     content = readFile("input.txt") #content -> list of string
@@ -57,7 +59,7 @@ def main():
     curPoint = (start,0)
     goalPoint = (goal,len(content)-1)
 
-    # A set of all visited coordinates.
+    # A list of all visited coordinates.
     visitedNode = []
     
     # Each node consists of (estimated path distance, n, distance, (x, y), visitedNode, direction)
@@ -65,33 +67,56 @@ def main():
     
     
     
-    n = 1
+    n = 0
     while open:
+        print(curPoint)
+        print("OPEN")
         node = heapq.heappop(open)
+        print("heapq")
         _, _, distance, curPoint, visitedNode, direction = node
+        print("node")
         if curPoint in visitedNode:
+            print("visitedNode")
             continue
         if curPoint == goalPoint:
+            print("goal")
             break
+        print('curPoint :', curPoint)
+        print('visitedNode :', visitedNode)
         visitedNode.append(curPoint)
+        print("appended")
+        print("current point : " , curPoint)
+        print("visitedNode : " , visitedNode)
         
         # Now consider moves in each direction.
         for dx, dy, d in DIRECTIONS:
             new_point = (curPoint[0] + dx, curPoint[1] + dy)
-            if new_point not in visitedNode and \
-            not content[new_point[1]][new_point[0]]:
-                h = distance + 1 + manhattan(new_point, goalPoint)
-                tie_break = 4 if direction != d else 0 # Prefer moving straight
-                new_node = Node(h, n + tie_break, distance + 1, new_point, node, d)
-                heapq.heappush(open, new_node)
-                n = n + 1
+            print("new point :" , new_point)
+            if new_point not in visitedNode and (content[new_point[0]][new_point[1]] != '1'):
+                print("ok")
+                if new_point[curPoint[1]] >= 0 and new_point[curPoint[1]] <= len(content[0]):
+                    h = distance + 1 + manhattan(new_point, goalPoint)
+                    print("h" , h)
+                    tie_break = 4 if direction != d else 0 # Prefer moving straight
+                    new_node = Node(h, n + tie_break, distance + 1, new_point, node, d)
+                    heapq.heappush(open, new_node)
+                    # print(new_node)
+                    n = n + 1
+                    print("masuk")
+                    curPoint = new_point
+            print("n", n)
+            print('curPoint :', curPoint)
+            print('visitedNode :', visitedNode)
+            print('node :', node)
+            
+            
 
     # Return a path to node
-    # result = ""
-    # while (curPoint != goalPoint):
-    #     result = node.direction + result
-    #     node = node.visitedNode
-    # print(result)
-    # return result
+    result = ""
+    if (curPoint == goalPoint):
+        result = node.direction + result
+        node = node.visitedNode
+    print(result)
+    return result
 
 main()
