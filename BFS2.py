@@ -3,17 +3,12 @@ import copy
 
 content = [] # Matrix of char
 visitedPoint = [] # Point yang dilalui atau diexpand
-AStarQueue = [] #Queue of Node
+BFSQueue = [] #Queue of Node
 
 class Node:
-    def __init__(self, cost, point ,path):
-        self.cost = cost
+    def __init__(self, point ,path):
         self.point = point
         self.path = path
-    def addPath(self):
-        pathTemp = []
-        pathTemp = copy.deepcopy(self.path)
-        pathTemp.append(self.point)
     
 def printMatrix(M):
     for i in range(len(M)):
@@ -33,17 +28,6 @@ def printMatrix(M):
                 elif(M[i][j] == 4):
                     print("\033[1;37;40m",M[i][j] ,"\033[0m",end ='')
                 # print(M[i][j],end ='')
-
-
-def manhattan(current, goal):
-    #Return the heuristic distance from current position to goal.
-    # print("manhattan :" ,abs(current[0] - goal[0]) + abs(current[1] - goal[1]))
-    return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
-
-def cost(curNode,goalNode,costToNode):
-    gn = curNode.cost - manhattan(curNode.point,goalNode.point) + costToNode -1
-    cost = gn + manhattan(curNode.point,goalNode.point)
-    return cost 
 
 def readFile(filename):
     contentTemp = []
@@ -103,7 +87,7 @@ def searchPoint(pointB, pointK, list1):
     else:
         return -1
 
-def expand(curNode,goalNode):
+def expand(curNode):
     curPos = copy.deepcopy(curNode.point)
     # print(curPos)
     visitedPointFromNode = [] # Point yang di lalui dari Node A ke B
@@ -114,32 +98,28 @@ def expand(curNode,goalNode):
     if(content[curPos[0]][curPos[1]+1] == '0' and searchPoint(curPos[0], curPos[1]+1, visitedPoint) == -1):
         curPosRight = copy.deepcopy(curPos)
         curPosRight[1] += 1
-        AStarQueue.append(buildNode(curNode,goalNode,curPosRight))
-        AStarQueue.sort(key=lambda cost: cost,reverse=False)
-        # print(AStarQueue)
+        BFSQueue.append(findNode(curNode,curPosRight))
+        # print(BFSQueue)
 
     #expand ke kiri
     if(content[curPos[0]][curPos[1]-1] == '0' and searchPoint(curPos[0], curPos[1]-1, visitedPoint) == -1):
         curPosLeft = copy.deepcopy(curPos)
         curPosLeft[1] -= 1
-        AStarQueue.append(buildNode(curNode,goalNode,curPosLeft))
-        AStarQueue.sort(key= lambda cost: cost, reverse=False)
+        BFSQueue.append(findNode(curNode,curPosLeft))
 
     #expand ke bawah
     if(content[curPos[0]+1][curPos[1]] == '0' and searchPoint(curPos[0]+1, curPos[1], visitedPoint) == -1):
         curPosDown = copy.deepcopy(curPos)
         curPosDown[0] += 1
-        AStarQueue.append(buildNode(curNode,goalNode,curPosDown))
-        AStarQueue.sort(key=lambda cost: cost, reverse=False)
+        BFSQueue.append(findNode(curNode,curPosDown))
 
     #expand ke atas
     if(content[curPos[0]-1][curPos[1]] == '0' and searchPoint(curPos[0]-1, curPos[1], visitedPoint) == -1):
         curPosUp = copy.deepcopy(curPos)
         curPosUp[0] -= 1
-        AStarQueue.append(buildNode(curNode,goalNode,curPosUp))
-        AStarQueue.sort(key=lambda cost: cost, reverse=False)
+        BFSQueue.append(findNode(curNode,curPosUp))
 
-def buildNode(curNode,goalNode,curPos):
+def findNode(curNode,curPos):
     visitedPointFromNode = []
     visitedPointFromNode.append(curPos)
     visitedPoint.append(curPos)
@@ -175,36 +155,22 @@ def buildNode(curNode,goalNode,curPos):
                 curPos[0] -= 1
                 visitedPoint.append(curPos)
                 visitedPointFromNode.append(curPos)
+    return Node(curPos ,curNode.path + visitedPointFromNode)
 
-    return Node(cost(curNode, goalNode, len(visitedPointFromNode)),curPos, curNode.path + visitedPointFromNode)
-
-def AStar(curNode, goalNode):
-    curTemp = copy.deepcopy(curNode)
-    goalTemp = copy.deepcopy(goalNode)
+def BFS(curNode):
+    nodeTemp = curNode
     i = 0
-    while(curTemp.point[1] < len(content)-1):
+    while(nodeTemp.point[1] < len(content)-1):
         print(i)
-        expand(curTemp,goalTemp)
-        curTemp = AStarQueue.pop(0)
-        i +=1
-    goalNode = copy.deepcopy(curTemp)
-    print(goalNode.path)
-
-def mainAStar():
-    global content, visitedPoint, AStarQueue
+        expand(nodeTemp)
+        nodeTemp = BFSQueue.pop(0)
+        i += 1
+    print(nodeTemp.path)
+        
+def mainBFS():
+    global content, visitedPoint, BFSQueue
     content = readFile("input.txt")
     print(content)
-
-    goal = 0
-    found = False
-    while(goal < len(content) and not(found)):
-        if(content[goal][len(content)-1] == '0'):
-            found = True
-        else:
-            goal += 1
-
-    goalNode = Node(0,[goal,len(content)-1],[])
-
     start = 0
     found = False
     while(start < len(content) and not(found)):
@@ -212,8 +178,8 @@ def mainAStar():
             found = True
         else:
             start += 1
-    curNode = Node(0 + manhattan([start,0],[goal,len(content)-1]),[start,0],[])
+    curNode = Node([start,0],[])
 
-    AStar(curNode, goalNode)
+    BFS(curNode)
 
-mainAStar()
+mainBFS()
