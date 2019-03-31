@@ -1,4 +1,4 @@
-import BFS2
+import BFS
 import Astar
 
 print("")
@@ -24,7 +24,7 @@ while (valid):
 	if (choice == "BFS" or choice == "1"):
 		filename = input("FileName : ")
 		print("")
-		BFS2.mainBFS(filename)
+		BFS.mainBFS(filename)
 	elif (choice == "A Star" or choice == "2"):
 		filename = input("FileName : ")
 		print("")
@@ -34,5 +34,3 @@ while (valid):
 	else:
 		print("Input is not Valid\n")
 		valid = False
-
-
