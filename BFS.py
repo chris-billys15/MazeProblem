@@ -1,3 +1,4 @@
+# from queue import PriorityQueue, Queue
 import copy
 
 content = [] # Matrix of char
@@ -16,23 +17,26 @@ def printMatrix(M):
 				if(M[i][j] == '1'):
 					print("\033[1;37;47m",M[i][j] ,"\033[0m")
 				elif(M[i][j] == '0'):
-					print("\033[1;38;48m",M[i][j] ,"\033[0m")
+					print("\033[1;39;48m",M[i][j] ,"\033[0m")
 				elif(M[i][j] == '#'):
 					print("\033[5;37;46m",M[i][j] ,"\033[0m")
+				elif(M[i][j] == 'V'):
+					print("\033[2;37;41m",M[i][j] ,"\033[0m")
 			else:
 				if(M[i][j] == '1'):
 					print("\033[1;37;47m",M[i][j] ,"\033[0m",end ='')
 				elif(M[i][j] == '0'):
-					print("\033[1;38;48m",M[i][j] ,"\033[0m",end ='')
+					print("\033[1;39;48m",M[i][j] ,"\033[0m",end ='')
 				elif(M[i][j] == '#'):
 					print("\033[5;37;46m",M[i][j] ,"\033[0m",end ='')
-				# print(M[i][j],end ='')
+				elif(M[i][j] == 'V'):
+					print("\033[2;37;41m",M[i][j] ,"\033[0m",end ='')
 
 def readFile(filename):
 	contentTemp = []
 	with open(filename) as f:
 		contentTemp = f.readlines()
-
+	# you may also want to remove whitespace characters like `\n` at the end of each line
 	contentTemp = [x.strip() for x in contentTemp]
 	maps = []
 	for i in range(len(contentTemp)):
@@ -88,7 +92,7 @@ def searchPoint(pointB, pointK, list1):
 
 def expand(curNode):
 	curPos = copy.deepcopy(curNode.point)
-	# print(curPos)
+	# print(curPos) 	
 	visitedPointFromNode = [] # Point yang di lalui dari Node A ke B
 	visitedPoint.append(curPos)
 	visitedPointFromNode.append(curPos)
@@ -168,6 +172,11 @@ def BFS(curNode):
 	# print(nodeTemp.path)
 	return nodeTemp
 
+# def init():
+# 	content = [] # Matrix of char
+# 	visitedPoint = [] # Point yang dilalui atau diexpand
+# 	BFSQueue = [] #Queue of Node
+
 def mainBFS(filename):
 	global content, visitedPoint, BFSQueue
 	content = readFile(filename)
@@ -182,6 +191,11 @@ def mainBFS(filename):
 	curNode = Node([start,0],[[start,0]])
 	curNode = BFS(curNode)
 
+	i = 0
+	while(i<len(visitedPoint)):
+		content[visitedPoint[i][0]][visitedPoint[i][1]] = 'V'
+		i+=1
+		
 	i = 0
 	while(i < len(curNode.path)):
 		content[curNode.path[i][0]][curNode.path[i][1]] = '#'
