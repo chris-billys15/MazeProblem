@@ -230,3 +230,4 @@ def mainAStar(filename):
 		content[curNode.path[i][0]][curNode.path[i][1]] = '#'
 		i += 1
 	printMatrix(content)
+	print("Total Biaya : ", curNode.cost)
