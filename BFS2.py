@@ -1,4 +1,3 @@
-# from queue import PriorityQueue, Queue
 import copy
 
 content = [] # Matrix of char
@@ -33,7 +32,7 @@ def readFile(filename):
 	contentTemp = []
 	with open(filename) as f:
 		contentTemp = f.readlines()
-	# you may also want to remove whitespace characters like `\n` at the end of each line
+
 	contentTemp = [x.strip() for x in contentTemp]
 	maps = []
 	for i in range(len(contentTemp)):
@@ -167,11 +166,6 @@ def BFS(curNode):
 		i += 1
 	# print(nodeTemp.path)
 	return nodeTemp
-
-# def init():
-# 	content = [] # Matrix of char
-# 	visitedPoint = [] # Point yang dilalui atau diexpand
-# 	BFSQueue = [] #Queue of Node
 
 def mainBFS(filename):
 	global content, visitedPoint, BFSQueue

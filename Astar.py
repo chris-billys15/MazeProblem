@@ -1,4 +1,3 @@
-# from queue import PriorityQueue, Queue
 import copy
 
 content = [] # Matrix of char
@@ -49,7 +48,7 @@ def readFile(filename):
 	contentTemp = []
 	with open(filename) as f:
 		contentTemp = f.readlines()
-	# you may also want to remove whitespace characters like `\n` at the end of each line
+
 	contentTemp = [x.strip() for x in contentTemp]
 	maps = []
 	for i in range(len(contentTemp)):
@@ -194,11 +193,6 @@ def AStar(curNode, goalNode):
 	goalNode = copy.deepcopy(curTemp)
 	# print(goalNode.path)
 	return goalNode
-
-# def init():
-# 	content = [] # Matrix of char
-# 	visitedPoint = [] # Point yang dilalui atau diexpand
-# 	AStarQueue = [] #Queue of Node
 
 def mainAStar(filename):
 	global content, visitedPoint, AStarQueue
