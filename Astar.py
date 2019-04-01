@@ -1,4 +1,3 @@
-# from queue import PriorityQueue, Queue
 import copy
 
 content = [] # Matrix of char
@@ -39,8 +38,6 @@ def printMatrix(M):
 
 
 def manhattan(current, goal):
-	#Return the heuristic distance from current position to goal.
-	# print("manhattan :" ,abs(current[0] - goal[0]) + abs(current[1] - goal[1]))
 	return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
 
 def cost(curNode,goalNode,costToNode):
@@ -52,7 +49,7 @@ def readFile(filename):
 	contentTemp = []
 	with open(filename) as f:
 		contentTemp = f.readlines()
-	# you may also want to remove whitespace characters like `\n` at the end of each line
+
 	contentTemp = [x.strip() for x in contentTemp]
 	maps = []
 	for i in range(len(contentTemp)):
@@ -197,12 +194,7 @@ def AStar(curNode, goalNode):
 		curTemp = AStarQueue.pop(0)
 	goalNode = copy.deepcopy(curTemp)
 	# print(goalNode.path)
-	return curTemp
-
-# def init():
-# 	content = [] # Matrix of char
-# 	visitedPoint = [] # Point yang dilalui atau diexpand
-# 	AStarQueue = [] #Queue of Node
+	return goalNode
 
 def mainAStar(filename):
 	global content, visitedPoint, AStarQueue
@@ -233,11 +225,11 @@ def mainAStar(filename):
 	while(i<len(visitedPoint)):
 		content[visitedPoint[i][0]][visitedPoint[i][1]] = 'V'
 		i+=1
-		
+
 	i = 0
 	while(i < len(curNode.path)):
 		content[curNode.path[i][0]][curNode.path[i][1]] = '#'
 		i += 1
 	printMatrix(content)
 	curNode.cost = len(curNode.path)
-	print("Cost : ", curNode.cost)
+	print("Total Biaya : ", curNode.cost)
